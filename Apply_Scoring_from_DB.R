@@ -7,9 +7,9 @@
 ############ Manual settings ##########
 
 # Choose credirect or citycash
-criteria <- "online"
-beginning <- "2020-12-01 00:00:00"
-end <- "2020-12-31 23:59:59"
+criteria <- "offline"
+beginning <- "2021-05-01 00:00:00"
+end <- "2021-05-31 23:59:59"
 
 
 
@@ -149,7 +149,7 @@ df$ЦКР <- ifelse(df$current_status_active_tot==0, "от 0 до 30 дни",
 
 # Read scoring table and merge
 scoring_sql <- suppressWarnings(dbSendQuery(con, "SELECT 
-   application_id, amount, score, period, display_score
+   application_id, amount, score, period, display_score, pd
    FROM citycash_db.credits_applications_scoring"))
 scoring <- fetch(scoring_sql, n=-1)
 df <- merge(df, scoring, by.x = c("id","amount","installments"), 
@@ -229,12 +229,12 @@ df <- df_raw
 df <- subset(df, is.na(df$sub_status) | df$sub_status!=136)
 
 # Select relevant columns
-df <- df[,c("credit_number","id","score","product_name","display_score",
+df <- df[,c("credit_number","id","score","product_name","display_score","pd",
             "date_entry","has_prev_credit","ЦКР","sub_status",
             "final_status","decline_reason")]
 
 # Rename fields 
-names(df) <- c("Кредит_номер","ID","Скор","Продукт","Дисплей Скор",
+names(df) <- c("Кредит_номер","ID","Скор","Продукт","Дисплей Скор","pd",
   "Дата","Пореден","ЦКР","Статус","Резултат","Причина_отказ")
 
 # Table with decline reasons for Application
